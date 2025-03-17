@@ -1,6 +1,7 @@
 import { FaAmazon, FaGoogle, FaNode, FaReact, FaTwitch } from "react-icons/fa";
+import { DesktopWindow } from "./window";
 
-export function Desktop({background}) {
+export function Desktop({background="/background.jpg"}) {
     return (
         <div className="fixed -z-10 top-0 left-0 w-full h-full bg-center bg-no-repeat bg-cover" style={{backgroundImage: 'url(' + background + ')'}}>
             <div id="desktop-icons" className="w-full h-full px-5 py-5 flex-col flex-wrap items-start flex">
@@ -20,6 +21,7 @@ export function Desktop({background}) {
                     <FaTwitch style={{height: '32px', width: '32px'}} />
                 </DesktopItem>
             </div>
+            <DesktopWindow />
         </div>
     );
 }
