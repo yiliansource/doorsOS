@@ -1,12 +1,13 @@
 import { autoUpdate, flip, useDismiss, useFloating, useInteractions } from "@floating-ui/react";
 import clsx from "clsx";
 import { format } from "date-fns";
-import { motion } from "motion/react";
+import { HTMLMotionProps, motion } from "motion/react";
 import { useState } from "react";
 import { BsDoorOpenFill } from "react-icons/bs";
 import { FaGoogle, FaMicrosoft, FaTwitch } from "react-icons/fa";
 import { useDate } from "../hooks/use-date";
 import { ContextMenu, ContextMenuItem, ContextMenuSeperator } from "./context-menu";
+import { useErrorBoundary } from "react-error-boundary";
 
 export function Taskbar() {
     const [isContextMenuOpen, setContextMenuOpen] = useState(false);
@@ -44,13 +45,19 @@ export function Taskbar() {
         requestAnimationFrame(update);
     };
 
+    const { showBoundary } = useErrorBoundary();
+
     return (
         <div
             className="fixed bottom-0 bg-[#222225] w-full h-10 flex flex-row justify-between items-stretch select-none"
             onContextMenu={handleContextMenu}
         >
             <div className="flex flex-row gap-0.5">
-                <TaskbarItem>
+                <TaskbarItem
+                    onClick={() => {
+                        showBoundary(new Error("NOT_IMPLEMENTED"));
+                    }}
+                >
                     <BsDoorOpenFill />
                 </TaskbarItem>
                 <TaskbarItem active>
@@ -84,9 +91,11 @@ export function Taskbar() {
 function TaskbarItem({
     children,
     active,
+    ...props
 }: React.PropsWithChildren<{
     active?: boolean;
-}>) {
+}> &
+    HTMLMotionProps<"div">) {
     const activeIndicator = {
         idle: {
             scaleX: 0.85,
@@ -104,6 +113,7 @@ function TaskbarItem({
             )}
             initial="idle"
             whileHover="hover"
+            {...props}
         >
             {children}
             {active && (
