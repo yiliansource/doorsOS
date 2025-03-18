@@ -1,10 +1,10 @@
-import { Desktop } from "./components/Desktop";
+import { Desktop } from "./components/desktop";
 import { Taskbar } from "./components/taskbar";
 
 function App() {
     return (
         <main className="relative w-screen">
-            <Desktop background={'/background.jpg'} />
+            <Desktop />
             <Taskbar />
         </main>
     );
