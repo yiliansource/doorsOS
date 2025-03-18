@@ -4,7 +4,7 @@ import { DesktopWindow } from "./window";
 export function Desktop() {
     return (
         <div
-            className="fixed -z-10 top-0 left-0 w-full h-full bg-center bg-no-repeat bg-cover"
+            className="fixed z-10 top-0 left-0 w-full h-[calc(100%-2.5rem)] bg-center bg-no-repeat bg-cover"
             style={{ backgroundImage: "url(/background.jpg)" }}
         >
             <div id="desktop-icons" className="w-full h-full px-5 py-5 flex-col flex-wrap items-start flex">
