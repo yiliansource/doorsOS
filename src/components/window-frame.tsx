@@ -44,10 +44,10 @@ export function WindowFrame({ children, width, height, title, iconSrc }: React.P
                     )}
                     <span>{title}</span>
                 </div>
-                <div className="window-buttons flex gap-[5px] items-center justify-center h-full flex-row *:text-sm *:flex *:items-center *:justify-center *:min-w-[37px] *:h-full">
-                    <button className="bg-[#ffffff] active:outline-none before:content-['\2014'] hover:bg-[#E9E9E9]"></button>
-                    <button className="bg-[#ffffff] active:outline-none before:content-['\2610'] hover:bg-[#E9E9E9]"></button>
-                    <button className="bg-[#ffffff] active:outline-none before:content-['\2715'] hover:bg-red-600 hover:text-[#E9E9E9] transition-colors"></button>
+                <div className="window-buttons flex gap-[5px] items-center justify-center h-full flex-row *:text-sm *:flex *:items-center *:justify-center *:min-w-[37px] *:h-full *:transition-colors">
+                    <button className="bg-[#ffffff] active:outline-none before:content-['\2014'] hover:bg-[#E9E9E9] active:bg-[#bbb]"></button>
+                    <button className="bg-[#ffffff] active:outline-none before:content-['\2610'] hover:bg-[#E9E9E9] active:bg-[#bbb]"></button>
+                    <button className="bg-[#ffffff] active:outline-none before:content-['\2715'] hover:bg-red-600 hover:text-[#E9E9E9] active:bg-red-400"></button>
                 </div>
             </div>
             <div className="window-content w-full p-[6px] box-border">{children}</div>
