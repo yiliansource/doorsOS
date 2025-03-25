@@ -33,7 +33,7 @@ export function BlueScreen({ error, resetErrorBoundary }: { error: Error; resetE
     }, [time, resetErrorBoundary]);
 
     return (
-        <div className="fixed left-0 top-0 w-screen h-screen bg-[#0079d8] px-46 flex flex-col justify-center font-light select-none">
+        <div className="fixed left-0 top-0 w-screen h-screen bg-[#0079d8] px-46 flex flex-col justify-center font-light">
             <h1 className="-mb-3 -mt-16 text-[210px]">:(</h1>
             <div className="text-[42px] max-w-5xl mx-6 leading-snug">
                 <p className="mb-9">
