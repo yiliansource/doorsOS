@@ -49,7 +49,7 @@ export function Taskbar() {
 
     return (
         <div
-            className="fixed bottom-0 bg-[#222225] w-full h-10 flex flex-row justify-between items-stretch select-none"
+            className="fixed z-10 bottom-0 bg-[#222225]/95 backdrop-blur-sm w-full h-10 flex flex-row justify-between items-stretch"
             onContextMenu={handleContextMenu}
         >
             <div className="flex flex-row gap-0.5">
