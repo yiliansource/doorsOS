@@ -1,9 +1,9 @@
-import { WindowFrame } from "../components/window-frame";
+import { AppProps } from "../lib/app-props";
 
-export function Notepad() {
+export const Notepad: React.ComponentType<AppProps> = () => {
     return (
-        <WindowFrame iconSrc="/app-icons/notepad.png" width={600} height={300} title="Untitled - Notepad">
+        <>
             <p className="text-sm">This is some window content.</p>
-        </WindowFrame>
+        </>
     );
-}
+};

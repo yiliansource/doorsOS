@@ -1,15 +1,17 @@
 import { autoUpdate, flip, useDismiss, useFloating, useInteractions } from "@floating-ui/react";
 import clsx from "clsx";
 import { format } from "date-fns";
-import { HTMLMotionProps, motion } from "motion/react";
+import { AnimatePresence, HTMLMotionProps, motion } from "motion/react";
 import { useState } from "react";
-import { BsDoorOpenFill } from "react-icons/bs";
-import { FaGoogle, FaMicrosoft, FaTwitch } from "react-icons/fa";
-import { useDate } from "../hooks/use-date";
-import { ContextMenu, ContextMenuItem, ContextMenuSeperator } from "./context-menu";
 import { useErrorBoundary } from "react-error-boundary";
+import { BsDoorOpenFill } from "react-icons/bs";
+import { useDate } from "../hooks/use-date";
+import { appIconLookup } from "../lib/app-lookup";
+import { useOsStore } from "../stores/os";
+import { ContextMenu, ContextMenuItem, ContextMenuSeperator } from "./context-menu";
 
 export function Taskbar() {
+    const os = useOsStore();
     const [isContextMenuOpen, setContextMenuOpen] = useState(false);
 
     const { refs, floatingStyles, context, update } = useFloating({
@@ -57,18 +59,25 @@ export function Taskbar() {
                     onClick={() => {
                         showBoundary(new Error("NOT_IMPLEMENTED"));
                     }}
+                    className="hover:text-neutral-500"
                 >
                     <BsDoorOpenFill />
                 </TaskbarItem>
-                <TaskbarItem active>
-                    <FaGoogle />
-                </TaskbarItem>
-                <TaskbarItem>
-                    <FaTwitch />
-                </TaskbarItem>
-                <TaskbarItem active>
-                    <FaMicrosoft />
-                </TaskbarItem>
+
+                <AnimatePresence mode="sync">
+                    {os.apps.map((app) => {
+                        const iconSrc = appIconLookup[app.id];
+                        return (
+                            <TaskbarItem key={app.pid} active>
+                                {iconSrc ? (
+                                    <img className="w-5 h-5" draggable={false} src={iconSrc} alt={app.id} />
+                                ) : (
+                                    <span>?</span>
+                                )}
+                            </TaskbarItem>
+                        );
+                    })}
+                </AnimatePresence>
             </div>
             <div className="flex flex-row">
                 <DateTimeWidget />
@@ -91,35 +100,44 @@ export function Taskbar() {
 function TaskbarItem({
     children,
     active,
+    className,
     ...props
 }: React.PropsWithChildren<{
     active?: boolean;
 }> &
     HTMLMotionProps<"div">) {
-    const activeIndicator = {
-        idle: {
-            scaleX: 0.85,
-        },
-        hover: {
-            scaleX: 1,
-        },
-    };
-
     return (
         <motion.div
             className={clsx(
                 "group relative flex items-center justify-center w-12 hover:bg-white/10 transition-colors",
+                className,
                 active && "",
             )}
-            initial="idle"
+            variants={{
+                open: {
+                    opacity: 1,
+                    scale: 1,
+                },
+                closed: {
+                    opacity: 0,
+                    scale: 0.8,
+                },
+            }}
+            initial="closed"
+            animate="open"
+            exit="closed"
             whileHover="hover"
             {...props}
+            layout
         >
             {children}
             {active && (
                 <motion.div
                     className="absolute bottom-0 bg-neutral-400 h-[2px] w-full"
-                    variants={activeIndicator}
+                    variants={{
+                        idle: { scaleX: 0.85 },
+                        hover: { scaleX: 1 },
+                    }}
                     transition={{ duration: 0.1 }}
                     layout
                 ></motion.div>

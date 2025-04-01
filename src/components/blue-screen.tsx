@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
+import { useOsStore } from "../stores/os";
 
 export function BlueScreen({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) {
     const qrCanvasRef = useRef<HTMLCanvasElement | null>(null);
-    const [time, setTime] = useState<number>(0);
+    const [percentage, setPercentage] = useState(0);
+    const { reset } = useOsStore();
 
     useEffect(() => {
         QRCode.toCanvas(qrCanvasRef.current, error.message, {
@@ -14,23 +16,31 @@ export function BlueScreen({ error, resetErrorBoundary }: { error: Error; resetE
     }, [error]);
 
     useEffect(() => {
-        const zero = Date.now();
+        let p = 0;
+        let timeout: NodeJS.Timeout;
 
-        const interval = setInterval(() => {
-            setTime(Date.now() - zero);
-        }, 100);
+        const incrementPercentageAndScheduleIncrement = () => {
+            p += 0.04 + Math.random() * 0.2;
+            p = Math.min(1, p);
+
+            setPercentage(p);
+
+            if (p >= 1) {
+                timeout = setTimeout(() => {
+                    reset();
+                    resetErrorBoundary();
+                }, 3000);
+            } else {
+                timeout = setTimeout(incrementPercentageAndScheduleIncrement, Math.random() * 2000);
+            }
+        };
+
+        timeout = setTimeout(incrementPercentageAndScheduleIncrement, Math.random() * 1000);
 
         return () => {
-            clearInterval(interval);
+            clearTimeout(timeout);
         };
-    }, []);
-
-    const resetTime = 2000;
-    useEffect(() => {
-        if (time > resetTime) {
-            resetErrorBoundary();
-        }
-    }, [time, resetErrorBoundary]);
+    }, [reset, resetErrorBoundary]);
 
     return (
         <div className="fixed left-0 top-0 w-screen h-screen bg-[#0079d8] px-46 flex flex-col justify-center font-light">
@@ -39,7 +49,10 @@ export function BlueScreen({ error, resetErrorBoundary }: { error: Error; resetE
                 <p className="mb-9">
                     You upset the website and it needs some time to restart. Use the time to think about what you did.
                 </p>
-                <p className="mb-9">{Math.floor((time / 2000) * 100).toFixed(0)}% complete</p>
+                <p className="mb-9">
+                    {Math.floor(percentage * 100).toFixed(0)}% complete{" "}
+                    {percentage >= 1 && <span>&ndash; restarting ...</span>}
+                </p>
             </div>
             <div className="flex flex-row mx-4 gap-4 items-stretch">
                 <div className="p-2">
